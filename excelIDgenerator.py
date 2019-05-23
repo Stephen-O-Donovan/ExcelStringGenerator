@@ -20,38 +20,80 @@ class GUI_Window:
 
     def __init__(self, master):
 
-        frame = Frame(master)
-        frame.pack()
+        mainframe = Frame(master)
+        mainframe.grid(column=0,row=0, sticky=(N,W,E,S) )
+        mainframe.columnconfigure(0, weight = 1)
+        mainframe.rowconfigure(0, weight = 1)
+        mainframe.pack(pady = 100, padx = 100)
 
-        self.button = Button(
-            frame, text="QUIT", fg="red", command=frame.quit
-            )
-        self.button.pack(side=LEFT)
+        #Create the radio button list for item choice
+        radioFrame = Frame(mainframe, borderwidth = 5, highlightthickness = 3, highlightbackground="black")
+        radioFrame.grid(row = 1, column = 1)
+        Label(radioFrame, text="Select the item type").pack()
 
-        menubar = Menu(root)
-        editmenu = Menu(menubar, tearoff=0)
-        editmenu.add_command(label="Cut")
-        editmenu.add_command(label="Copy")
-        editmenu.add_command(label="Paste")
-        menubar.add_cascade(label="Edit", menu=editmenu)
+        itemvar = StringVar()
+        taskRadio = Radiobutton(radioFrame, text="Task", variable=itemvar, value="Task", indicatoron = 0, width=10)
+        taskRadio.pack(anchor = W)
 
-        # display the menu
-        root.config(menu=menubar)
+        activityRadio = Radiobutton(radioFrame, text="Activity", variable=itemvar, value="Activity", indicatoron = 0, width=10)
+        activityRadio.pack(anchor = W)
 
-        
+        checkListRadio = Radiobutton(radioFrame, text="CheckList", variable=itemvar, value="CheckList", indicatoron = 0, width=10)
+        checkListRadio.pack(anchor = W)
 
-        self.hi_there = Button(frame, text="Hello", command=self.say_hi)
-        self.hi_there.pack(side=LEFT)
+        itemvar.set("Task")
 
-    def say_hi(self):
-        print ("hi there, everyone!")
+        #Create the entry fields
+        entryFrame = Frame(mainframe, borderwidth = 5, highlightthickness = 3, highlightbackground="black")
+        entryFrame.grid(column=3,row=1, sticky=(N,W,E,S) )
+        Label(entryFrame, text="Enter the cell details").grid(row=3, column=3)
+
+        pidColumnEntry = Entry(entryFrame, width=4)
+        Label(entryFrame, text="Parent ID Cell Letter: ").grid(row=4, column=3)
+        pidColumnEntry.grid(row=4, column=4)
+        pidColumnEntry.delete(0, END)
+        pidColumnEntry.insert(0, "A")
+
+        pNameColumnEntry = Entry(entryFrame, width=4)
+        Label(entryFrame, text="Parent Name Cell Letter: ").grid(row=5, column=3)
+        pNameColumnEntry.grid(row=5, column=4)
+        pNameColumnEntry.delete(0, END)
+        pNameColumnEntry.insert(0, "B")
+
+        pInChildColumnEntry = Entry(entryFrame, width=4)
+        Label(entryFrame, text="Parent in Child Cell Letter: ").grid(row=6, column=3)
+        pInChildColumnEntry.grid(row=6, column=4)
+        pInChildColumnEntry.delete(0, END)
+        pInChildColumnEntry.insert(0, "C")
+
+        firstCellNumber = Entry(entryFrame, width=4)
+        Label(entryFrame, text="First Cell Number: ").grid(row=7, column=3)
+        firstCellNumber.grid(row=7, column=4)
+        firstCellNumber.delete(0, END)
+        firstCellNumber.insert(0, 4)
+
+        lastCellNumber = Entry(entryFrame, width=4)
+        Label(entryFrame, text="Last Cell Number: ").grid(row=8, column=3)
+        lastCellNumber.grid(row=8, column=4)
+        lastCellNumber.delete(0, END)
+        lastCellNumber.insert(0, 50)
+
+
+        # Create the generate and close buttons
+        self.generateButton = Button(mainframe, text="Generate", command=lambda : self.createIDsInExcel(itemvar.get(), pidColumnEntry.get(), pNameColumnEntry.get(), pInChildColumnEntry.get(), int(firstCellNumber.get()), int(lastCellNumber.get())))
+        self.generateButton.grid(row = 5, column = 1)
+
+        self.closeButton = Button( mainframe, text="Close", fg="red", command=mainframe.quit)
+        self.closeButton.grid(row = 5, column = 3)
 
     def createIDsInExcel(self, levelName, parentIDcolumnLetter, parentNameColumnLetter,
                      parentInChildColumnLetter, firstCellNumber, lastCellNumber):
 
+        print("Generating text file")
         fileName = ("%s.txt" % levelName) #Change this to what and where you want the text file saved
         delimiter = 0.00
         multiplier = 1
+        parentName = ''
 
         if levelName == "Task":
             parentName ="WP"
@@ -97,14 +139,4 @@ app = GUI_Window(root)
 root.mainloop()
 root.destroy()
 
-
-'''
-levelName = "CheckList"
-parentIDcolumnLetter = "A"
-parentNameColumnLetter = "B"
-parentInChildColumnLetter = "C"
-firstCellNumber = 4
-lastCellNumber = 20
-createIDsInExcel(levelName, parentIDcolumnLetter, parentNameColumnLetter,
-                 parentInChildColumnLetter, firstCellNumber, lastCellNumber+1)'''
 
