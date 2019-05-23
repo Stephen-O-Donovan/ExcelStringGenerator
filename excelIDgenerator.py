@@ -3,7 +3,7 @@ Generates strings to insert unique IDs into Excel
 The numbers in the cells will auto generate and increment based
 on the hierarchy of the item
 Choose which level to generate cells for (Task/Activity/CheckList)
-Choose the beginning cell and the number of cells
+Choose the beginning and last cell
 The script will generate a text file, simply copy and paste
 the contents into the beginning cell in Excel
 Excel will interpret all the functions for you, you
@@ -11,12 +11,14 @@ only need to copy and paste!
 
 Author: Stephen O'Donovan
 Date: 22/05/2019
-Version: 2.0
+Version: 3.0
 """
 
 from tkinter import *
 
 class GUI_Window:
+
+    # Creates the GUI
 
     def __init__(self, master):
 
@@ -98,6 +100,7 @@ class GUI_Window:
         self.closeButton = Button( mainframe, text="Close", fg="red", command=mainframe.quit)
         self.closeButton.grid(row = 7, column = 3)
 
+    #Generates the text file with the Excel String
     def createIDsInExcel(self, levelName, parentIDcolumnLetter, parentNameColumnLetter,
                      parentInChildColumnLetter, firstCellNumber, lastCellNumber, setFileName, setFileLocation):
 
