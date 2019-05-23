@@ -27,7 +27,7 @@ class GUI_Window:
         mainframe.pack(pady = 100, padx = 100)
 
         #Create the radio button list for item choice
-        radioFrame = Frame(mainframe, borderwidth = 5, highlightthickness = 3, highlightbackground="black")
+        radioFrame = Frame(mainframe, borderwidth = 2, highlightthickness = 2, highlightbackground="black")
         radioFrame.grid(row = 1, column = 1)
         Label(radioFrame, text="Select the item type").pack()
 
@@ -44,8 +44,8 @@ class GUI_Window:
         itemvar.set("Task")
 
         #Create the entry fields
-        entryFrame = Frame(mainframe, borderwidth = 5, highlightthickness = 3, highlightbackground="black")
-        entryFrame.grid(column=3,row=1, sticky=(N,W,E,S) )
+        entryFrame = Frame(mainframe, borderwidth = 2, highlightthickness = 2, highlightbackground="black")
+        entryFrame.grid(column=2,row=1, sticky=(N,W,E,S) )
         Label(entryFrame, text="Enter the cell details").grid(row=3, column=3)
 
         pidColumnEntry = Entry(entryFrame, width=4)
@@ -78,19 +78,37 @@ class GUI_Window:
         lastCellNumber.delete(0, END)
         lastCellNumber.insert(0, 50)
 
+        fileName = Entry(mainframe, width=30)
+        Label(mainframe, text="File name (leave blank for default) ").grid(row=5, column=1)
+        fileName.grid(row=5, column=2)
+        
+        fileLocation = Entry(mainframe, width=30)
+        Label(mainframe, text="Save file in (leave blank to save in current directory) ").grid(row=6, column=1)
+        fileLocation.grid(row=6, column=2)
+
+        successVar = StringVar()
+        successLabel = Label(mainframe, textvariable=successVar, fg="green")
+        successLabel.grid(row = 8, column = 1)
 
         # Create the generate and close buttons
-        self.generateButton = Button(mainframe, text="Generate", command=lambda : self.createIDsInExcel(itemvar.get(), pidColumnEntry.get(), pNameColumnEntry.get(), pInChildColumnEntry.get(), int(firstCellNumber.get()), int(lastCellNumber.get())))
-        self.generateButton.grid(row = 5, column = 1)
+        self.generateButton = Button(mainframe, text="Generate", command=lambda : self.createIDsInExcel(itemvar.get(), pidColumnEntry.get(), pNameColumnEntry.get(), pInChildColumnEntry.get(), int(firstCellNumber.get()), int(lastCellNumber.get()), fileName.get(), fileLocation.get() ) 
+        & successVar.set("Successfully created file") )
+        self.generateButton.grid(row = 7, column = 1)
 
         self.closeButton = Button( mainframe, text="Close", fg="red", command=mainframe.quit)
-        self.closeButton.grid(row = 5, column = 3)
+        self.closeButton.grid(row = 7, column = 3)
 
     def createIDsInExcel(self, levelName, parentIDcolumnLetter, parentNameColumnLetter,
-                     parentInChildColumnLetter, firstCellNumber, lastCellNumber):
+                     parentInChildColumnLetter, firstCellNumber, lastCellNumber, setFileName, setFileLocation):
 
         print("Generating text file")
-        fileName = ("%s.txt" % levelName) #Change this to what and where you want the text file saved
+        if setFileName == '':
+            fileName = ("%s.txt" % levelName) 
+        else:
+            fileName = setFileName + ".txt"
+
+        if setFileLocation != '':
+            fileName = setFileLocation + fileName
         delimiter = 0.00
         multiplier = 1
         parentName = ''
